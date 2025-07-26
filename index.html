@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sassinator - SaaS Idea Validator</title>
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
+    <script src="config.js"></script>
     <style>
         :root {
             --primary-blue: #4169E1;
@@ -899,8 +900,8 @@
         // Real API Analysis
         async function analyzeIdeaWithAPI(idea, tone, apiKey) {
             try {
-                // Call our backend API instead of OpenAI directly
-                const response = await fetch('http://localhost:5000/api/validate', {
+                            // Call our backend API instead of OpenAI directly
+            const response = await fetch(`${window.API_CONFIG.apiUrl}/api/validate`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -1022,7 +1023,7 @@
             
             try {
                 console.log('Loading history for user:', userName, 'ID:', userId);
-                const response = await fetch(`http://localhost:5000/api/history/${userId}`);
+                const response = await fetch(`${window.API_CONFIG.apiUrl}/api/history/${userId}`);
                 
                 if (response.ok) {
                     const data = await response.json();

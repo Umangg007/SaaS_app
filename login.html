@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Sassinator</title>
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
+    <script src="config.js"></script>
     <style>
         :root {
             --primary-blue: #4169E1;
@@ -452,7 +453,7 @@
             loginBtn.innerHTML = '<i class="ri-loader-4-line"></i> Signing In...';
             loginBtn.disabled = true;
             try {
-                const response = await fetch('http://localhost:5000/api/login', {
+                const response = await fetch(`${window.API_CONFIG.apiUrl}/api/login`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -502,7 +503,7 @@
             }
             
             try {
-                const response = await fetch('http://localhost:5000/api/forgot-password', {
+                const response = await fetch(`${window.API_CONFIG.apiUrl}/api/forgot-password`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -547,7 +548,7 @@
             }
             
             try {
-                const response = await fetch('http://localhost:5000/api/reset-password', {
+                const response = await fetch(`${window.API_CONFIG.apiUrl}/api/reset-password`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

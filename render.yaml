@@ -1,0 +1,29 @@
+services:
+  # Backend API Service
+  - type: web
+    name: sassinator-backend
+    env: node
+    plan: free
+    buildCommand: cd backend && npm install
+    startCommand: cd backend && npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_URI
+        sync: false
+      - key: COHERE_API_KEY
+        sync: false
+      - key: PORT
+        value: 10000
+
+  # Frontend Static Site
+  - type: web
+    name: sassinator-frontend
+    env: static
+    plan: free
+    buildCommand: echo "No build needed for static files"
+    staticPublishPath: .
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html 
