@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sassinator - SaaS Idea Validator</title>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
+    <style>
+        :root {
+            --primary-blue: #4169E1;
+            --primary-yellow: #FFD700;
+            --white: #FFFFFF;
+            --light-bg: #F8F9FA;
+            --light-surface: #FFFFFF;
+            --light-text: #2C3E50;
+            --light-shadow: #E9ECEF;
+            --dark-bg: #1A1A1A;
+            --dark-surface: #2D2D2D;
+            --dark-text: #FFFFFF;
+            --dark-shadow: #0F0F0F;
+            --neumorphic-light: 8px 8px 16px rgba(0, 0, 0, 0.1), -8px -8px 16px rgba(255, 255, 255, 0.8);
+            --neumorphic-dark: 8px 8px 16px rgba(0, 0, 0, 0.3), -8px -8px 16px rgba(255, 255, 255, 0.05);
+            --neumorphic-inset-light: inset 4px 4px 8px rgba(0, 0, 0, 0.1), inset -4px -4px 8px rgba(255, 255, 255, 0.8);
+            --neumorphic-inset-dark: inset 4px 4px 8px rgba(0, 0, 0, 0.3), inset -4px -4px 8px rgba(255, 255, 255, 0.05);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--light-bg);
+            color: var(--light-text);
+            transition: all 0.3s ease;
+            min-height: 100vh;
+        }
+
+        body.dark-mode {
+            background: var(--dark-bg);
+            color: var(--dark-text);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            margin-bottom: 40px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-blue);
+        }
+
+        .logo i {
+            color: var(--primary-yellow);
+            font-size: 2.5rem;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 15px;
+            background: var(--light-surface);
+            border-radius: 20px;
+            box-shadow: var(--neumorphic-light);
+            color: var(--primary-blue);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .dark-mode .user-info {
+            background: var(--dark-surface);
+            box-shadow: var(--neumorphic-dark);
+        }
+
+        .user-name {
+            color: var(--primary-blue);
+        }
+
+        .dark-mode .user-name {
+            color: var(--primary-yellow);
+        }
+
+        .theme-toggle, .history-btn, .logout-btn {
+            width: 50px;
+            height: 50px;
+            border: none;
+            border-radius: 15px;
+            background: var(--light-surface);
+            box-shadow: var(--neumorphic-light);
+            color: var(--light-text);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .settings-btn {
+            width: 50px;
+            height: 50px;
+            border: none;
+            border-radius: 15px;
+            background: var(--light-surface);
+            box-shadow: var(--neumorphic-light);
+            color: var(--light-text);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .dark-mode .theme-toggle,
+        .dark-mode .history-btn,
+        .dark-mode .settings-btn,
+        .dark-mode .logout-btn {
+            background: var(--dark-surface);
+            box-shadow: var(--neumorphic-dark);
+            color: var(--dark-text);
+        }
+
+        .theme-toggle:hover, .history-btn:hover, .logout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 12px 12px 20px rgba(0, 0, 0, 0.15), -12px -12px 20px rgba(255, 255, 255, 0.9);
+        }
+
+        .settings-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 12px 12px 20px rgba(0, 0, 0, 0.15), -12px -12px 20px rgba(255, 255, 255, 0.9);
+        }
+
+        .dark-mode .theme-toggle:hover,
+        .dark-mode .history-btn:hover,
+        .dark-mode .settings-btn:hover,
+        .dark-mode .logout-btn:hover {
+            box-shadow: 12px 12px 20px rgba(0, 0, 0, 0.4), -12px -12px 20px rgba(255, 255, 255, 0.08);
+        }
+
+        /* Special styling for logout button */
+        .logout-btn {
+            color: #e74c3c !important;
+        }
+
+        .logout-btn:hover {
+            background: #e74c3c !important;
+            color: white !important;
+        }
+
+        .dark-mode .logout-btn {
+            color: #ff6b6b !important;
+        }
+
+        .dark-mode .logout-btn:hover {
+            background: #ff6b6b !important;
+            color: white !important;
+        }
+
+        /* Settings Modal */
+        .settings-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .settings-modal.show {
+            display: flex;
+        }
+
+        .settings-content {
+            background: var(--light-surface);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: var(--neumorphic-light);
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+        }
+
+        .dark-mode .settings-content {
+            background: var(--dark-surface);
+            box-shadow: var(--neumorphic-dark);
+        }
+
+        .settings-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .settings-header h3 {
+            color: var(--primary-blue);
+            font-size: 1.3rem;
+        }
+
+        .close-settings {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--light-text);
+            cursor: pointer;
+        }
+
+        .dark-mode .close-settings {
+            color: var(--dark-text);
+        }
+
+        .api-key-input {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 15px;
+            background: var(--light-bg);
+            box-shadow: var(--neumorphic-inset-light);
+            color: var(--light-text);
+            font-size: 1rem;
+            margin-bottom: 20px;
+            font-family: monospace;
+        }
+
+        .dark-mode .api-key-input {
+            background: var(--dark-bg);
+            box-shadow: var(--neumorphic-inset-dark);
+            color: var(--dark-text);
+        }
+
+        .save-api-btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 15px;
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-yellow));
+            color: var(--white);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .save-api-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .api-status {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .api-status.success {
+            background: rgba(76, 175, 80, 0.1);
+            color: #4CAF50;
+            border: 1px solid rgba(76, 175, 80, 0.3);
+        }
+
+        .api-status.error {
+            background: rgba(244, 67, 54, 0.1);
+            color: #F44336;
+            border: 1px solid rgba(244, 67, 54, 0.3);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 400px;
+            height: 100vh;
+            background: var(--light-surface);
+            box-shadow: var(--neumorphic-light);
+            transition: right 0.3s ease;
+            z-index: 1000;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .dark-mode .sidebar {
+            background: var(--dark-surface);
+            box-shadow: var(--neumorphic-dark);
+        }
+
+        .sidebar.open {
+            right: 0;
+        }
+
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--light-shadow);
+        }
+
+        .dark-mode .sidebar-header {
+            border-bottom-color: var(--dark-shadow);
+        }
+
+        .sidebar h2 {
+            color: var(--primary-blue);
+            font-size: 1.5rem;
+        }
+
+        .close-sidebar {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--light-text);
+            cursor: pointer;
+        }
+
+        .dark-mode .close-sidebar {
+            color: var(--dark-text);
+        }
+
+        .history-item {
+            background: var(--light-bg);
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 15px;
+            box-shadow: var(--neumorphic-inset-light);
+            transition: all 0.3s ease;
+        }
+
+        .dark-mode .history-item {
+            background: var(--dark-bg);
+            box-shadow: var(--neumorphic-inset-dark);
+        }
+
+        .history-item:hover {
+            transform: translateY(-2px);
+        }
+
+        .history-item h3 {
+            color: var(--primary-blue);
+            margin-bottom: 10px;
+        }
+
+        .dark-mode .history-item h3 {
+            color: var(--primary-yellow);
+        }
+
+        /* Dark mode styling for history header */
+        .dark-mode .history-item {
+            background: var(--dark-bg);
+            box-shadow: var(--neumorphic-inset-dark);
+        }
+
+        .dark-mode .history-item p {
+            color: var(--dark-text);
+        }
+
+        .history-item p {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* Main Content */
+        .main-content {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero-section {
+            margin-bottom: 50px;
+        }
+
+        .hero-section h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-yellow));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-section p {
+            font-size: 1.2rem;
+            opacity: 0.8;
+            margin-bottom: 40px;
+        }
+
+        /* Form */
+        .validator-form {
+            background: var(--light-surface);
+            padding: 40px;
+            border-radius: 25px;
+            box-shadow: var(--neumorphic-light);
+            margin-bottom: 40px;
+        }
+
+        .dark-mode .validator-form {
+            background: var(--dark-surface);
+            box-shadow: var(--neumorphic-dark);
+        }
+
+        .form-group {
+            margin-bottom: 30px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--light-text);
+        }
+
+        .dark-mode .form-group label {
+            color: var(--dark-text);
+        }
+
+        .idea-textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 20px;
+            border: none;
+            border-radius: 15px;
+            background: var(--light-bg);
+            box-shadow: var(--neumorphic-inset-light);
+            color: var(--light-text);
+            font-size: 1rem;
+            resize: vertical;
+            transition: all 0.3s ease;
+        }
+
+        .dark-mode .idea-textarea {
+            background: var(--dark-bg);
+            box-shadow: var(--neumorphic-inset-dark);
+            color: var(--dark-text);
+        }
+
+        .idea-textarea:focus {
+            outline: none;
+            box-shadow: inset 6px 6px 12px rgba(0, 0, 0, 0.15), inset -6px -6px 12px rgba(255, 255, 255, 0.9);
+        }
+
+        .dark-mode .idea-textarea:focus {
+            box-shadow: inset 6px 6px 12px rgba(0, 0, 0, 0.4), inset -6px -6px 12px rgba(255, 255, 255, 0.08);
+        }
+
+        .tone-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .tone-btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 15px;
+            background: var(--light-surface);
+            box-shadow: var(--neumorphic-light);
+            color: var(--light-text);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 150px;
+        }
+
+        .dark-mode .tone-btn {
+            background: var(--dark-surface);
+            box-shadow: var(--neumorphic-dark);
+            color: var(--dark-text);
+        }
+
+        .tone-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 12px 12px 20px rgba(0, 0, 0, 0.15), -12px -12px 20px rgba(255, 255, 255, 0.9);
+        }
+
+        .dark-mode .tone-btn:hover {
+            box-shadow: 12px 12px 20px rgba(0, 0, 0, 0.4), -12px -12px 20px rgba(255, 255, 255, 0.08);
+        }
+
+        .tone-btn.active {
+            background: var(--primary-blue);
+            color: var(--white);
+            box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.2), inset -4px -4px 8px rgba(255, 255, 255, 0.1);
+        }
+
+        .search-btn {
+            width: 100%;
+            padding: 20px;
+            border: none;
+            border-radius: 15px;
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-yellow));
+            color: var(--white);
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: var(--neumorphic-light);
+        }
+
+        .dark-mode .search-btn {
+            box-shadow: var(--neumorphic-dark);
+        }
+
+        .search-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 15px 15px 25px rgba(0, 0, 0, 0.2), -15px -15px 25px rgba(255, 255, 255, 0.9);
+        }
+
+        .dark-mode .search-btn:hover {
+            box-shadow: 15px 15px 25px rgba(0, 0, 0, 0.5), -15px -15px 25px rgba(255, 255, 255, 0.1);
+        }
+
+        /* Results Section */
+        .results-section {
+            display: none;
+            background: var(--light-surface);
+            padding: 40px;
+            border-radius: 25px;
+            box-shadow: var(--neumorphic-light);
+            margin-top: 40px;
+        }
+
+        .dark-mode .results-section {
+            background: var(--dark-surface);
+            box-shadow: var(--neumorphic-dark);
+        }
+
+        .results-section.show {
+            display: block;
+        }
+
+        .result-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .result-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: var(--white);
+        }
+
+        .result-icon.success {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+        }
+
+        .result-icon.warning {
+            background: linear-gradient(135deg, #FF9800, #F57C00);
+        }
+
+        .result-icon.error {
+            background: linear-gradient(135deg, #F44336, #D32F2F);
+        }
+
+        .result-content h2 {
+            color: var(--primary-blue);
+            margin-bottom: 10px;
+        }
+
+        .result-content p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 15px;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+
+            .logo {
+                font-size: 1.5rem;
+            }
+
+            .logo i {
+                font-size: 2rem;
+            }
+
+            .hero-section h1 {
+                font-size: 2rem;
+            }
+
+            .hero-section p {
+                font-size: 1rem;
+            }
+
+            .validator-form {
+                padding: 25px;
+            }
+
+            .tone-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .tone-btn {
+                width: 100%;
+                max-width: 250px;
+            }
+
+            .sidebar {
+                width: 100%;
+                right: -100%;
+            }
+
+            .results-section {
+                padding: 25px;
+            }
+
+            .result-header {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-section h1 {
+                font-size: 1.5rem;
+            }
+
+            .validator-form {
+                padding: 20px;
+            }
+
+            .idea-textarea {
+                min-height: 120px;
+                padding: 15px;
+            }
+
+            .search-btn {
+                padding: 15px;
+                font-size: 1rem;
+            }
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--light-shadow);
+            border-top: 4px solid var(--primary-blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        .dark-mode .spinner {
+            border-color: var(--dark-shadow);
+            border-top-color: var(--primary-blue);
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <i class="ri-rocket-fill"></i>
+                <span>Sassinator</span>
+            </div>
+            <div class="header-controls">
+                <div class="user-info" id="userInfo" style="display: none;">
+                    <span class="user-name" id="userName"></span>
+                </div>
+                <button class="theme-toggle" onclick="toggleTheme()">
+                    <i class="ri-sun-line" id="theme-icon"></i>
+                </button>
+                <button class="history-btn" onclick="toggleSidebar()">
+                    <i class="ri-history-line"></i>
+                </button>
+                <button class="logout-btn" onclick="logout()" title="Logout">
+                    <i class="ri-logout-box-r-line"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>Search History</h2>
+                <button class="close-sidebar" onclick="toggleSidebar()">
+                    <i class="ri-close-line"></i>
+                </button>
+            </div>
+            <div id="history-list">
+                <!-- History items will be populated here -->
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="hero-section">
+                <h1>Validate Your SaaS Idea</h1>
+                <p>Get honest feedback on your startup idea with our AI-powered validator</p>
+            </div>
+
+            <!-- Validator Form -->
+            <form class="validator-form" id="validatorForm">
+                <div class="form-group">
+                    <label for="ideaText">Describe your SaaS idea:</label>
+                    <textarea 
+                        id="ideaText" 
+                        class="idea-textarea" 
+                        placeholder="Tell us about your startup idea... What problem does it solve? Who is your target audience? What makes it unique?"
+                        required
+                    ></textarea>
+                </div>
+
+                <div class="tone-buttons">
+                    <button type="button" class="tone-btn" data-tone="professional">
+                        <i class="ri-briefcase-line"></i> Professional
+                    </button>
+                    <button type="button" class="tone-btn" data-tone="fun">
+                        <i class="ri-emotion-line"></i> Fun
+                    </button>
+                </div>
+
+                <button type="submit" class="search-btn">
+                    <i class="ri-search-line"></i> Validate My Idea
+                </button>
+            </form>
+
+            <!-- Loading -->
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Analyzing your idea...</p>
+            </div>
+
+            <!-- Results -->
+            <div class="results-section" id="results">
+                <div class="result-header">
+                    <div class="result-icon" id="resultIcon">
+                        <i class="ri-check-line"></i>
+                    </div>
+                    <div class="result-content">
+                        <h2 id="resultTitle">Analysis Complete</h2>
+                        <p id="resultText">Your idea has been analyzed successfully.</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Auth check: redirect to login if not logged in
+        if (localStorage.getItem('isLoggedIn') !== 'true') {
+            window.location.href = 'login.html';
+        }
+
+        // Display user info
+        function displayUserInfo() {
+            const userEmail = localStorage.getItem('userEmail');
+            const userName = localStorage.getItem('username');
+            const userInfo = document.getElementById('userInfo');
+            const userNameElement = document.getElementById('userName');
+            
+            if (userEmail || userName) {
+                userInfo.style.display = 'flex';
+                userNameElement.textContent = userName || userEmail;
+            }
+        }
+
+        // Initialize user info display
+        displayUserInfo();
+
+        // Theme Management
+        let isDarkMode = localStorage.getItem('darkMode') === 'true';
+        
+        function toggleTheme() {
+            isDarkMode = !isDarkMode;
+            document.body.classList.toggle('dark-mode', isDarkMode);
+            localStorage.setItem('darkMode', isDarkMode);
+            
+            const themeIcon = document.getElementById('theme-icon');
+            themeIcon.className = isDarkMode ? 'ri-moon-line' : 'ri-sun-line';
+        }
+
+        // Initialize theme
+        document.body.classList.toggle('dark-mode', isDarkMode);
+        const themeIcon = document.getElementById('theme-icon');
+        themeIcon.className = isDarkMode ? 'ri-moon-line' : 'ri-sun-line';
+
+        // Sidebar Management
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const isOpening = !sidebar.classList.contains('open');
+            
+            sidebar.classList.toggle('open');
+            
+            // If opening, show loading and refresh history
+            if (isOpening) {
+                showHistoryLoading();
+                loadHistoryFromDatabase();
+            }
+        }
+
+        // Tone Button Management
+        let selectedTone = 'professional';
+        
+        document.querySelectorAll('.tone-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.tone-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                selectedTone = this.dataset.tone;
+            });
+        });
+
+        // Set default tone
+        document.querySelector('.tone-btn[data-tone="professional"]').classList.add('active');
+
+        // Logout function
+        function logout() {
+            localStorage.removeItem('isLoggedIn');
+            window.location.href = 'login.html';
+        }
+
+        // Form Submission
+        document.getElementById('validatorForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const ideaText = document.getElementById('ideaText').value.trim();
+            if (!ideaText) {
+                alert('Please describe your idea first!');
+                return;
+            }
+
+            const apiKey = 'your_api_key_here'; // Replace with your actual API key
+
+            // Show loading
+            document.getElementById('loading').classList.add('show');
+            document.getElementById('results').classList.remove('show');
+
+            // Call real API
+            analyzeIdeaWithAPI(ideaText, selectedTone, apiKey);
+        });
+
+        // Real API Analysis
+        async function analyzeIdeaWithAPI(idea, tone, apiKey) {
+            try {
+                // Call our backend API instead of OpenAI directly
+                const response = await fetch('http://localhost:5000/api/validate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        idea: idea,
+                        tone: tone,
+                        userId: localStorage.getItem('userId') // Send userId for database storage
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Backend request failed');
+                }
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    displayResult(data.result, data.resultType);
+                    addToHistory(idea, tone, data.result, data.resultType);
+                } else {
+                    throw new Error(data.error || 'Failed to get analysis');
+                }
+                
+            } catch (error) {
+                console.error('API Error:', error);
+                // Fallback to mock analysis if API fails
+                const fallbackAnalysis = generateMockAnalysis(idea, tone);
+                displayResult(fallbackAnalysis.text, fallbackAnalysis.type);
+                addToHistory(idea, tone, fallbackAnalysis.text, fallbackAnalysis.type);
+            } finally {
+                document.getElementById('loading').classList.remove('show');
+                document.getElementById('results').classList.add('show');
+            }
+        }
+
+        function determineResultType(analysis) {
+            const lowerAnalysis = analysis.toLowerCase();
+            if (lowerAnalysis.includes('promising') || lowerAnalysis.includes('strong') || lowerAnalysis.includes('excellent')) {
+                return 'success';
+            } else if (lowerAnalysis.includes('needs work') || lowerAnalysis.includes('potential') || lowerAnalysis.includes('improve')) {
+                return 'warning';
+            } else {
+                return 'error';
+            }
+        }
+
+        function displayResult(analysis, resultType) {
+            const resultIcon = document.getElementById('resultIcon');
+            const resultTitle = document.getElementById('resultTitle');
+            const resultText = document.getElementById('resultText');
+
+            resultIcon.className = `result-icon ${resultType}`;
+            
+            const icons = {
+                'success': '<i class="ri-check-line"></i>',
+                'warning': '<i class="ri-error-warning-line"></i>',
+                'error': '<i class="ri-close-line"></i>'
+            };
+            
+            const titles = {
+                'success': 'Promising Idea!',
+                'warning': 'Needs More Work',
+                'error': 'Requires Major Changes'
+            };
+            
+            resultIcon.innerHTML = icons[resultType];
+            resultTitle.textContent = titles[resultType];
+            resultText.innerHTML = analysis.replace(/\n/g, '<br>');
+        }
+
+        function generateMockAnalysis(idea, tone) {
+            const ideaLength = idea.length;
+            const hasKeywords = idea.toLowerCase().includes('problem') || 
+                              idea.toLowerCase().includes('solution') ||
+                              idea.toLowerCase().includes('market');
+            
+            if (ideaLength > 100 && hasKeywords) {
+                return {
+                    type: 'success',
+                    icon: '<i class="ri-check-line"></i>',
+                    title: 'Promising Idea!',
+                    text: tone === 'professional' 
+                        ? 'Your idea shows strong potential. The problem-solution fit is clear, and you\'ve identified a specific market need. Consider conducting market research and building an MVP to validate further.'
+                        : '🎉 Wow! This idea has some real potential! You\'ve clearly thought about the problem and who needs it solved. Time to get building and see if people actually want it!'
+                };
+            } else if (ideaLength > 50) {
+                return {
+                    type: 'warning',
+                    icon: '<i class="ri-error-warning-line"></i>',
+                    title: 'Needs More Detail',
+                    text: tone === 'professional'
+                        ? 'Your idea has potential but needs more development. Consider defining the problem more clearly, identifying your target market, and explaining your unique value proposition.'
+                        : '🤔 Interesting start! But we need more details to really evaluate this. What problem are you solving? Who needs this? What makes your solution special?'
+                };
+            } else {
+                return {
+                    type: 'error',
+                    icon: '<i class="ri-close-line"></i>',
+                    title: 'Incomplete Idea',
+                    text: tone === 'professional'
+                        ? 'Your idea description is too brief to provide meaningful analysis. Please provide more details about the problem, solution, target market, and competitive advantages.'
+                        : '😅 That\'s a bit too short! We need more info to help you out. Tell us more about what you\'re building and why people would want it!'
+                };
+            }
+        }
+
+        // History Management
+        async function loadHistoryFromDatabase() {
+            const userId = localStorage.getItem('userId');
+            const userName = localStorage.getItem('username') || localStorage.getItem('userEmail');
+            
+            if (!userId) {
+                console.log('No userId found, using localStorage history');
+                updateHistoryDisplay(JSON.parse(localStorage.getItem('sassinatorHistory') || '[]'));
+                return;
+            }
+            
+            try {
+                console.log('Loading history for user:', userName, 'ID:', userId);
+                const response = await fetch(`http://localhost:5000/api/history/${userId}`);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('History loaded from database:', data.history.length, 'items');
+                    updateHistoryDisplay(data.history);
+                } else {
+                    console.error('Failed to load history from database');
+                    // Fallback to localStorage
+                    updateHistoryDisplay(JSON.parse(localStorage.getItem('sassinatorHistory') || '[]'));
+                }
+            } catch (error) {
+                console.error('Error loading history:', error);
+                // Fallback to localStorage if database fails
+                updateHistoryDisplay(JSON.parse(localStorage.getItem('sassinatorHistory') || '[]'));
+            }
+        }
+
+        function addToHistory(idea, tone, analysis, resultType) {
+            // Also store in localStorage as backup
+            const history = JSON.parse(localStorage.getItem('sassinatorHistory') || '[]');
+            const historyItem = {
+                id: Date.now(),
+                idea: idea.substring(0, 100) + (idea.length > 100 ? '...' : ''),
+                tone: tone,
+                timestamp: new Date().toLocaleString(),
+                analysis: analysis,
+                resultType: resultType
+            };
+            
+            history.unshift(historyItem);
+            if (history.length > 10) history.pop();
+            
+            localStorage.setItem('sassinatorHistory', JSON.stringify(history));
+            
+            // Update display with database data
+            loadHistoryFromDatabase();
+        }
+
+        function updateHistoryDisplay(history = null) {
+            const historyList = document.getElementById('history-list');
+            const userName = localStorage.getItem('username') || localStorage.getItem('userEmail');
+            
+            if (!history) {
+                // Use localStorage as fallback
+                history = JSON.parse(localStorage.getItem('sassinatorHistory') || '[]');
+            }
+            
+            historyList.innerHTML = history.length === 0 
+                ? `<p style="text-align: center; opacity: 0.7;">No search history yet for ${userName || 'you'}</p>`
+                : `<div style="margin-bottom: 15px; padding: 10px; background: var(--light-bg); border-radius: 10px; text-align: center; font-size: 0.9rem; opacity: 0.8; color: var(--light-text);">
+                    <strong style="color: var(--primary-blue);">${userName || 'Your'}</strong> recent idea validations
+                   </div>` + history.map(item => `
+                    <div class="history-item">
+                        <h3>${item.resultType ? item.resultType.charAt(0).toUpperCase() + item.resultType.slice(1) : 'Analysis'}</h3>
+                        <p><strong>Idea:</strong> ${item.idea}</p>
+                        <p><strong>Tone:</strong> ${item.tone ? item.tone.charAt(0).toUpperCase() + item.tone.slice(1) : 'N/A'}</p>
+                        <p><strong>Date:</strong> ${item.timestamp || new Date(item.createdAt).toLocaleString()}</p>
+                    </div>
+                `).join('');
+        }
+
+        // Initialize history display
+        loadHistoryFromDatabase();
+
+        // Add loading indicator for history
+        function showHistoryLoading() {
+            const historyList = document.getElementById('history-list');
+            historyList.innerHTML = '<p style="text-align: center; opacity: 0.7;"><i class="ri-loader-4-line" style="animation: spin 1s linear infinite;"></i> Loading your history...</p>';
+        }
+
+        // Close sidebar when clicking outside
+        document.addEventListener('click', function(e) {
+            const sidebar = document.getElementById('sidebar');
+            const historyBtn = document.querySelector('.history-btn');
+            
+            if (!sidebar.contains(e.target) && !historyBtn.contains(e.target) && sidebar.classList.contains('open')) {
+                sidebar.classList.remove('open');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Sassinator</title>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
+    <style>
+        :root {
+            --primary-blue: #4169E1;
+            --primary-yellow: #FFD700;
+            --white: #FFFFFF;
+            --light-bg: #F8F9FA;
+            --light-surface: #FFFFFF;
+            --light-text: #2C3E50;
+            --light-shadow: #E9ECEF;
+            --dark-bg: #1A1A1A;
+            --dark-surface: #2D2D2D;
+            --dark-text: #FFFFFF;
+            --dark-shadow: #0F0F0F;
+            --neumorphic-light: 8px 8px 16px rgba(0, 0, 0, 0.1), -8px -8px 16px rgba(255, 255, 255, 0.8);
+            --neumorphic-dark: 8px 8px 16px rgba(0, 0, 0, 0.3), -8px -8px 16px rgba(255, 255, 255, 0.05);
+            --neumorphic-inset-light: inset 4px 4px 8px rgba(0, 0, 0, 0.1), inset -4px -4px 8px rgba(255, 255, 255, 0.8);
+            --neumorphic-inset-dark: inset 4px 4px 8px rgba(0, 0, 0, 0.3), inset -4px -4px 8px rgba(255, 255, 255, 0.05);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--light-bg);
+            color: var(--light-text);
+            transition: all 0.3s ease;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        body.dark-mode {
+            background: var(--dark-bg);
+            color: var(--dark-text);
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+        }
+
+        .login-card {
+            background: var(--light-surface);
+            padding: 40px;
+            border-radius: 25px;
+            box-shadow: var(--neumorphic-light);
+            text-align: center;
+        }
+
+        .dark-mode .login-card {
+            background: var(--dark-surface);
+            box-shadow: var(--neumorphic-dark);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-blue);
+            margin-bottom: 30px;
+        }
+
+        .logo i {
+            color: var(--primary-yellow);
+            font-size: 2.5rem;
+        }
+
+        .login-card h1 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            color: var(--light-text);
+        }
+
+        .dark-mode .login-card h1 {
+            color: var(--dark-text);
+        }
+
+        .login-card p {
+            opacity: 0.7;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--light-text);
+        }
+
+        .dark-mode .form-group label {
+            color: var(--dark-text);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 15px;
+            background: var(--light-bg);
+            box-shadow: var(--neumorphic-inset-light);
+            color: var(--light-text);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .dark-mode .form-input {
+            background: var(--dark-bg);
+            box-shadow: var(--neumorphic-inset-dark);
+            color: var(--dark-text);
+        }
+
+        .form-input:focus {
+            outline: none;
+            box-shadow: inset 6px 6px 12px rgba(0, 0, 0, 0.15), inset -6px -6px 12px rgba(255, 255, 255, 0.9);
+        }
+
+        .dark-mode .form-input:focus {
+            box-shadow: inset 6px 6px 12px rgba(0, 0, 0, 0.4), inset -6px -6px 12px rgba(255, 255, 255, 0.08);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 15px;
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-yellow));
+            color: var(--white);
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: var(--neumorphic-light);
+            margin-bottom: 20px;
+        }
+
+        .dark-mode .login-btn {
+            box-shadow: var(--neumorphic-dark);
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 12px 12px 20px rgba(0, 0, 0, 0.15), -12px -12px 20px rgba(255, 255, 255, 0.9);
+        }
+
+        .dark-mode .login-btn:hover {
+            box-shadow: 12px 12px 20px rgba(0, 0, 0, 0.4), -12px -12px 20px rgba(255, 255, 255, 0.08);
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 25px 0;
+            color: var(--light-text);
+            opacity: 0.6;
+        }
+
+        .dark-mode .divider {
+            color: var(--dark-text);
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--light-shadow);
+        }
+
+        .dark-mode .divider::before,
+        .dark-mode .divider::after {
+            background: var(--dark-shadow);
+        }
+
+        .divider span {
+            padding: 0 15px;
+        }
+
+
+
+        .register-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .register-link a {
+            color: var(--primary-blue);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .register-link a:hover {
+            text-decoration: underline;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border: none;
+            border-radius: 15px;
+            background: var(--light-surface);
+            box-shadow: var(--neumorphic-light);
+            color: var(--light-text);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .dark-mode .theme-toggle {
+            background: var(--dark-surface);
+            box-shadow: var(--neumorphic-dark);
+            color: var(--dark-text);
+        }
+
+        .theme-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: 12px 12px 20px rgba(0, 0, 0, 0.15), -12px -12px 20px rgba(255, 255, 255, 0.9);
+        }
+
+        .dark-mode .theme-toggle:hover {
+            box-shadow: 12px 12px 20px rgba(0, 0, 0, 0.4), -12px -12px 20px rgba(255, 255, 255, 0.08);
+        }
+
+        /* Modal Styles */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: var(--light-surface);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: var(--neumorphic-light);
+            max-width: 400px;
+            width: 90%;
+            position: relative;
+        }
+
+        .dark-mode .modal-content {
+            background: var(--dark-surface);
+            box-shadow: var(--neumorphic-dark);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h3 {
+            color: var(--primary-blue);
+            margin: 0;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--light-text);
+            cursor: pointer;
+        }
+
+        .dark-mode .close-btn {
+            color: var(--dark-text);
+        }
+
+        .forgot-password {
+            text-align: right;
+            margin-bottom: 20px;
+        }
+
+        .forgot-password a {
+            color: var(--primary-blue);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .forgot-password a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 15px;
+            }
+
+            .login-card {
+                padding: 30px 25px;
+            }
+
+            .logo {
+                font-size: 1.5rem;
+            }
+
+            .logo i {
+                font-size: 2rem;
+            }
+
+            .login-card h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()">
+        <i class="ri-sun-line" id="theme-icon"></i>
+    </button>
+
+    <div class="login-container">
+        <div class="login-card">
+            <div class="logo">
+                <i class="ri-heart-fill"></i>
+                <span>Sassinator</span>
+            </div>
+            
+            <h1>Welcome Back</h1>
+            <p>Sign in to continue validating your ideas</p>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" class="form-input" placeholder="Enter your username" autocomplete="username" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" class="form-input" placeholder="Enter your password" autocomplete="current-password" required>
+                </div>
+
+                <div class="forgot-password">
+                    <a href="#" onclick="showForgotPasswordModal()">Forgot Password?</a>
+                </div>
+
+                <button type="submit" class="login-btn">
+                    <i class="ri-login-box-line"></i> Sign In
+                </button>
+            </form>
+
+
+
+            <div class="register-link">
+                <p>Don't have an account? <a href="register.html">Sign up</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Forgot Password Modal -->
+    <div id="forgotPasswordModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Reset Password</h3>
+                <button onclick="closeForgotPasswordModal()" class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="step1">
+                    <p>Enter your email address to receive password reset instructions.</p>
+                    <div class="form-group">
+                        <label for="resetEmail">Email</label>
+                        <input type="email" id="resetEmail" class="form-input" placeholder="Enter your email" required>
+                    </div>
+                    <button onclick="requestPasswordReset()" class="login-btn">Send Reset Link</button>
+                </div>
+                <div id="step2" style="display: none;">
+                    <p>Enter the reset token and your new password.</p>
+                    <div class="form-group">
+                        <label for="resetToken">Reset Token</label>
+                        <input type="text" id="resetToken" class="form-input" placeholder="Enter reset token" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="newPassword">New Password</label>
+                        <input type="password" id="newPassword" class="form-input" placeholder="Enter new password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmNewPassword">Confirm New Password</label>
+                        <input type="password" id="confirmNewPassword" class="form-input" placeholder="Confirm new password" required>
+                    </div>
+                    <button onclick="resetPassword()" class="login-btn">Reset Password</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script>
+        // Theme Management
+        let isDarkMode = localStorage.getItem('darkMode') === 'true';
+        
+        function toggleTheme() {
+            isDarkMode = !isDarkMode;
+            document.body.classList.toggle('dark-mode', isDarkMode);
+            localStorage.setItem('darkMode', isDarkMode);
+            
+            const themeIcon = document.getElementById('theme-icon');
+            themeIcon.className = isDarkMode ? 'ri-moon-line' : 'ri-sun-line';
+        }
+
+        // Initialize theme
+        document.body.classList.toggle('dark-mode', isDarkMode);
+        const themeIcon = document.getElementById('theme-icon');
+        themeIcon.className = isDarkMode ? 'ri-moon-line' : 'ri-sun-line';
+
+        // Form Submission
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            if (!username || !password) {
+                alert('Please fill in all fields');
+                return;
+            }
+            // Show loading state
+            const loginBtn = document.querySelector('.login-btn');
+            const originalText = loginBtn.innerHTML;
+            loginBtn.innerHTML = '<i class="ri-loader-4-line"></i> Signing In...';
+            loginBtn.disabled = true;
+            try {
+                const response = await fetch('http://localhost:5000/api/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        username: username,
+                        password: password
+                    })
+                });
+                const data = await response.json();
+                if (response.ok && data.userId) {
+                    localStorage.setItem('isLoggedIn', 'true');
+                    localStorage.setItem('userId', data.userId);
+                    localStorage.setItem('username', data.username);
+                    localStorage.setItem('userEmail', data.email);
+                    window.location.href = 'index.html';
+                } else {
+                    throw new Error(data.error || 'Login failed');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                alert('Login failed: ' + (error.message || 'Please check your credentials'));
+                loginBtn.innerHTML = originalText;
+                loginBtn.disabled = false;
+            }
+        });
+
+
+
+        // Forgot Password Functions
+        function showForgotPasswordModal() {
+            document.getElementById('forgotPasswordModal').style.display = 'flex';
+            document.getElementById('step1').style.display = 'block';
+            document.getElementById('step2').style.display = 'none';
+        }
+
+        function closeForgotPasswordModal() {
+            document.getElementById('forgotPasswordModal').style.display = 'none';
+        }
+
+        async function requestPasswordReset() {
+            const email = document.getElementById('resetEmail').value.trim();
+            
+            if (!email) {
+                alert('Please enter your email address');
+                return;
+            }
+            
+            try {
+                const response = await fetch('http://localhost:5000/api/forgot-password', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    alert(`Reset token: ${data.resetToken}\n\nIn production, this would be sent to your email.`);
+                    document.getElementById('step1').style.display = 'none';
+                    document.getElementById('step2').style.display = 'block';
+                    document.getElementById('resetToken').value = data.resetToken;
+                } else {
+                    alert(data.error || 'Failed to send reset email');
+                }
+            } catch (error) {
+                console.error('Password reset error:', error);
+                alert('Failed to send reset email. Please try again.');
+            }
+        }
+
+        async function resetPassword() {
+            const resetToken = document.getElementById('resetToken').value.trim();
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmNewPassword = document.getElementById('confirmNewPassword').value;
+            
+            if (!resetToken || !newPassword || !confirmNewPassword) {
+                alert('Please fill in all fields');
+                return;
+            }
+            
+            if (newPassword !== confirmNewPassword) {
+                alert('Passwords do not match');
+                return;
+            }
+            
+            if (newPassword.length < 8) {
+                alert('Password must be at least 8 characters long');
+                return;
+            }
+            
+            try {
+                const response = await fetch('http://localhost:5000/api/reset-password', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ resetToken, newPassword })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    alert('Password reset successfully! You can now login with your new password.');
+                    closeForgotPasswordModal();
+                } else {
+                    alert(data.error || 'Failed to reset password');
+                }
+            } catch (error) {
+                console.error('Password reset error:', error);
+                alert('Failed to reset password. Please try again.');
+            }
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const forgotModal = document.getElementById('forgotPasswordModal');
+            
+            if (event.target === forgotModal) {
+                closeForgotPasswordModal();
+            }
+        }
+    </script>
+</body>
+</html>
