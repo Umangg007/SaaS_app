@@ -15,7 +15,8 @@ app.use(cors()); // Allow frontend to communicate with backend
 app.use(express.json()); // Parse JSON requests
 
 // Connect to MongoDB
-mongoose.connect('mongodb://localhost:27017/sassinator')
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/sassinator';
+mongoose.connect(MONGODB_URI)
   .then(() => console.log('MongoDB connected!'))
   .catch(err => console.error('MongoDB connection error:', err));
 
@@ -69,10 +70,11 @@ app.post('/api/validate', async (req, res) => {
 - Be clear, actionable, and to the point. No unnecessary fluff!`;
 
         // Call Cohere API
+        const COHERE_API_KEY = process.env.COHERE_API_KEY || 'dggRhTkg6pXWoIpQuU5wnGtDXG3bw2KqHd4rsExn';
         const cohereResponse = await fetch('https://api.cohere.ai/v1/generate', {
             method: 'POST',
             headers: {
-                'Authorization': `Bearer dggRhTkg6pXWoIpQuU5wnGtDXG3bw2KqHd4rsExn`,
+                'Authorization': `Bearer ${COHERE_API_KEY}`,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
