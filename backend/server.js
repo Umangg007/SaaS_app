@@ -16,9 +16,31 @@ app.use(express.json()); // Parse JSON requests
 
 // Connect to MongoDB
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/sassinator';
-mongoose.connect(MONGODB_URI)
-  .then(() => console.log('MongoDB connected!'))
-  .catch(err => console.error('MongoDB connection error:', err));
+
+// MongoDB connection with better error handling
+mongoose.connect(MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+})
+.then(() => {
+    console.log('✅ MongoDB connected successfully!');
+    console.log('📊 Database:', MONGODB_URI.split('/').pop());
+})
+.catch(err => {
+    console.error('❌ MongoDB connection error:', err.message);
+    console.log('⚠️  Application will continue without database connection');
+    console.log('💡 Make sure to set MONGODB_URI environment variable');
+});
+
+// Health check route for Render
+app.get('/', (req, res) => {
+    res.json({ 
+        message: 'Sassinator Backend is running! 🚀',
+        status: 'success',
+        timestamp: new Date().toISOString(),
+        environment: process.env.NODE_ENV || 'development'
+    });
+});
 
 // Test route to check if server is running
 app.get('/api/test', (req, res) => {
@@ -287,9 +309,31 @@ app.use('*', (req, res) => {
 
 // Start server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
+
+// Improved server startup with error handling
+const server = app.listen(PORT, () => {
     console.log(`🚀 Sassinator Backend running on port ${PORT}`);
     console.log(`📡 API available at http://localhost:${PORT}`);
     console.log(`🧪 Test endpoint: http://localhost:${PORT}/api/test`);
     console.log(`✅ Ready to validate SaaS ideas with Cohere AI!`);
+    console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
+});
+
+// Handle server errors
+server.on('error', (error) => {
+    if (error.code === 'EADDRINUSE') {
+        console.error(`❌ Port ${PORT} is already in use`);
+    } else {
+        console.error('❌ Server error:', error);
+    }
+    process.exit(1);
+});
+
+// Graceful shutdown
+process.on('SIGTERM', () => {
+    console.log('🛑 SIGTERM received, shutting down gracefully');
+    server.close(() => {
+        console.log('✅ Server closed');
+        process.exit(0);
+    });
 }); 
