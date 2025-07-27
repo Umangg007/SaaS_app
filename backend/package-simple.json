@@ -1,0 +1,25 @@
+{
+  "name": "sassinator-backend",
+  "version": "1.0.0",
+  "description": "Backend for Sassinator SaaS Validator App",
+  "main": "server-simple.js",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "scripts": {
+    "start": "node server-simple.js",
+    "dev": "nodemon server-simple.js"
+  },
+  "keywords": ["saas", "validator", "openai", "api"],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "node-fetch": "^2.7.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+} 
