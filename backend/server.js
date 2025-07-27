@@ -18,10 +18,7 @@ app.use(express.json()); // Parse JSON requests
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/sassinator';
 
 // MongoDB connection with better error handling
-mongoose.connect(MONGODB_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-})
+mongoose.connect(MONGODB_URI)
 .then(() => {
     console.log('✅ MongoDB connected successfully!');
     console.log('📊 Database:', MONGODB_URI.split('/').pop());
