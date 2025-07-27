@@ -18,6 +18,7 @@ app.use(cors({
         
         const allowedOrigins = [
             'https://saas-app-rwda.onrender.com',
+            'https://sassinator-frontend.onrender.com',
             'http://localhost:3000',
             'http://localhost:5000',
             'http://127.0.0.1:5500',
@@ -28,7 +29,7 @@ app.use(cors({
             callback(null, true);
         } else {
             console.log('CORS blocked origin:', origin);
-            callback(null, true); // Allow all for now
+            callback(null, true); // Allow all for debugging
         }
     },
     credentials: false,
