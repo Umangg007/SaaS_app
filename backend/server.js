@@ -27,11 +27,14 @@ mongoose.connect(MONGODB_URI)
 .then(() => {
     console.log('✅ MongoDB connected successfully!');
     console.log('📊 Database:', MONGODB_URI.split('/').pop());
+    console.log('🔗 Connection:', MONGODB_URI.includes('mongodb+srv') ? 'Atlas Cloud' : 'Local');
 })
 .catch(err => {
     console.error('❌ MongoDB connection error:', err.message);
     console.log('⚠️  Application will continue without database connection');
     console.log('💡 Make sure to set MONGODB_URI environment variable');
+    console.log('💡 For local development, start MongoDB locally');
+    console.log('💡 For production, use MongoDB Atlas connection string');
 });
 
 // Health check route for Render
@@ -158,6 +161,15 @@ app.post('/api/signup', async (req, res) => {
     return res.status(400).json({ error: 'Username, email, and password are required' });
   }
   
+  // Validate input
+  if (password.length < 6) {
+    return res.status(400).json({ error: 'Password must be at least 6 characters long' });
+  }
+  
+  if (username.length < 3) {
+    return res.status(400).json({ error: 'Username must be at least 3 characters long' });
+  }
+  
   try {
     // Check if user already exists
     const existingUser = await User.findOne({ 
@@ -171,13 +183,14 @@ app.post('/api/signup', async (req, res) => {
     }
     
     // Hash password
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(password, 12);
     
     // Create new user
     const user = new User({
       username,
       email,
-      password_hash: hashedPassword
+      password_hash: hashedPassword,
+      createdAt: new Date()
     });
     
     await user.save();
@@ -186,7 +199,9 @@ app.post('/api/signup', async (req, res) => {
     res.json({ 
       success: true, 
       message: 'User registered successfully',
-      userId: user._id
+      userId: user._id,
+      username: user.username,
+      email: user.email
     });
     
   } catch (error) {
@@ -211,6 +226,7 @@ app.post('/api/login', async (req, res) => {
     });
     
     if (!user) {
+      console.log('❌ Login failed: User not found for:', username);
       return res.status(401).json({ error: 'Invalid username or password' });
     }
     
@@ -218,8 +234,13 @@ app.post('/api/login', async (req, res) => {
     const isValidPassword = await bcrypt.compare(password, user.password_hash);
     
     if (!isValidPassword) {
+      console.log('❌ Login failed: Invalid password for user:', user.username);
       return res.status(401).json({ error: 'Invalid username or password' });
     }
+    
+    // Update last login
+    user.lastLogin = new Date();
+    await user.save();
     
     console.log('✅ Login successful for:', user.username);
     res.json({ 
@@ -227,7 +248,9 @@ app.post('/api/login', async (req, res) => {
       message: 'Login successful',
       userId: user._id,
       username: user.username,
-      email: user.email
+      email: user.email,
+      createdAt: user.createdAt,
+      lastLogin: user.lastLogin
     });
     
   } catch (error) {
@@ -322,6 +345,65 @@ app.get('/api/check-username/:username', async (req, res) => {
   const { username } = req.params;
   const user = await User.findOne({ username });
   res.json({ available: !user });
+});
+
+// Get user profile endpoint
+app.get('/api/user/:userId', async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const user = await User.findById(userId).select('-password_hash -resetToken -resetTokenExpiry');
+    
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    
+    res.json({
+      success: true,
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        createdAt: user.createdAt,
+        lastLogin: user.lastLogin,
+        profile: user.profile
+      }
+    });
+    
+  } catch (error) {
+    console.error('❌ Get user profile error:', error);
+    res.status(500).json({ error: 'Failed to get user profile' });
+  }
+});
+
+// Update user profile endpoint
+app.put('/api/user/:userId', async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { firstName, lastName, bio } = req.body;
+    
+    const user = await User.findById(userId);
+    
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    
+    // Update profile fields
+    if (firstName) user.profile.firstName = firstName;
+    if (lastName) user.profile.lastName = lastName;
+    if (bio) user.profile.bio = bio;
+    
+    await user.save();
+    
+    res.json({
+      success: true,
+      message: 'Profile updated successfully',
+      profile: user.profile
+    });
+    
+  } catch (error) {
+    console.error('❌ Update profile error:', error);
+    res.status(500).json({ error: 'Failed to update profile' });
+  }
 });
 
 // Helper function to determine result type
