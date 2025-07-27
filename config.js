@@ -6,7 +6,7 @@ const config = {
     },
     // Production environment (Render)
     production: {
-        apiUrl: 'https://sassinator-backend.onrender.com'
+        apiUrl: 'https://your-actual-backend-url.onrender.com'
     }
 };
 
