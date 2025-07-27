@@ -21,5 +21,8 @@
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
+  },
+  production: {
+    apiUrl: 'https://your-actual-backend-url.onrender.com'
   }
 } 
