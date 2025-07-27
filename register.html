@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register - Sassinator</title>
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
+    <script src="config.js"></script>
     <style>
         :root {
             --primary-blue: #4169E1;
@@ -530,7 +531,7 @@
             usernameStatus.textContent = 'Checking...';
             usernameStatus.style.color = 'gray';
             try {
-                const res = await fetch(`http://localhost:5000/api/check-username/${username}`);
+                const res = await fetch(`${window.API_CONFIG.apiUrl}/api/check-username/${username}`);
                 const data = await res.json();
                 if (data.available) {
                     usernameStatus.textContent = 'Username is available! ✅';
@@ -606,7 +607,7 @@
             
             try {
                 // Call backend signup API
-                const response = await fetch('http://localhost:5000/api/signup', {
+                const response = await fetch(`${window.API_CONFIG.apiUrl}/api/signup`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

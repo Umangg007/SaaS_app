@@ -15,9 +15,30 @@ app.use(cors()); // Allow frontend to communicate with backend
 app.use(express.json()); // Parse JSON requests
 
 // Connect to MongoDB
-mongoose.connect('mongodb://localhost:27017/sassinator')
-  .then(() => console.log('MongoDB connected!'))
-  .catch(err => console.error('MongoDB connection error:', err));
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/sassinator';
+
+// MongoDB connection with better error handling
+mongoose.connect(MONGODB_URI)
+.then(() => {
+    console.log('✅ MongoDB connected successfully!');
+    console.log('📊 Database:', MONGODB_URI.split('/').pop());
+})
+.catch(err => {
+    console.error('❌ MongoDB connection error:', err.message);
+    console.log('⚠️  Application will continue without database connection');
+    console.log('💡 Make sure to set MONGODB_URI environment variable');
+});
+
+// Health check route for Render
+app.get('/', (req, res) => {
+    res.json({ 
+        message: 'Sassinator Backend is running! 🚀',
+        status: 'success',
+        timestamp: new Date().toISOString(),
+        environment: process.env.NODE_ENV || 'development',
+        port: process.env.PORT || 5000
+    });
+});
 
 // Test route to check if server is running
 app.get('/api/test', (req, res) => {
@@ -69,10 +90,11 @@ app.post('/api/validate', async (req, res) => {
 - Be clear, actionable, and to the point. No unnecessary fluff!`;
 
         // Call Cohere API
+        const COHERE_API_KEY = process.env.COHERE_API_KEY || 'dggRhTkg6pXWoIpQuU5wnGtDXG3bw2KqHd4rsExn';
         const cohereResponse = await fetch('https://api.cohere.ai/v1/generate', {
             method: 'POST',
             headers: {
-                'Authorization': `Bearer dggRhTkg6pXWoIpQuU5wnGtDXG3bw2KqHd4rsExn`,
+                'Authorization': `Bearer ${COHERE_API_KEY}`,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
@@ -113,54 +135,100 @@ app.post('/api/validate', async (req, res) => {
             timestamp: new Date().toISOString()
         });
 
-        if (req.body.userId) {
-          await History.create({
-            userId: req.body.userId,
-            idea,
-            tone,
-            result: aiResponse,
-            timestamp: new Date()
-          });
-        }
-
     } catch (error) {
-        console.error('Server Error:', error);
+        console.error('❌ Validation error:', error);
         res.status(500).json({ 
-            error: 'Internal server error',
+            error: 'Failed to validate idea',
             message: error.message
         });
     }
 });
 
-// Signup endpoint
+// User registration endpoint
 app.post('/api/signup', async (req, res) => {
-  console.log('🔐 Signup attempt:', req.body);
+  console.log('👤 Signup request:', req.body);
   const { username, email, password } = req.body;
-  if (!username || !email || !password) return res.status(400).json({ error: 'All fields required' });
-  const hash = await bcrypt.hash(password, 10);
+  
+  if (!username || !email || !password) {
+    return res.status(400).json({ error: 'Username, email, and password are required' });
+  }
+  
   try {
-    const user = new User({ username, email, password_hash: hash });
+    // Check if user already exists
+    const existingUser = await User.findOne({ 
+      $or: [{ username }, { email }] 
+    });
+    
+    if (existingUser) {
+      return res.status(400).json({ 
+        error: existingUser.username === username ? 'Username already taken' : 'Email already registered' 
+      });
+    }
+    
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
+    
+    // Create new user
+    const user = new User({
+      username,
+      email,
+      password_hash: hashedPassword
+    });
+    
     await user.save();
+    
     console.log('✅ User registered successfully:', username);
-    res.json({ success: true, userId: user._id, username: user.username, email: user.email });
-  } catch (err) {
-    console.error('❌ Signup error:', err.message);
-    res.status(400).json({ error: 'Username or email already exists' });
+    res.json({ 
+      success: true, 
+      message: 'User registered successfully',
+      userId: user._id
+    });
+    
+  } catch (error) {
+    console.error('❌ Signup error:', error);
+    res.status(500).json({ error: 'Failed to register user' });
   }
 });
 
-// Login endpoint
+// User login endpoint
 app.post('/api/login', async (req, res) => {
-  console.log('🔑 Login attempt:', req.body);
+  console.log('🔐 Login request:', req.body);
   const { username, password } = req.body;
-  const user = await User.findOne({ username });
-  console.log('�� User found:', user ? 'Yes' : 'No');
-  if (!user) return res.status(400).json({ error: 'Invalid username or password' });
-  const valid = await bcrypt.compare(password, user.password_hash);
-  console.log('🔐 Password valid:', valid ? 'Yes' : 'No');
-  if (!valid) return res.status(400).json({ error: 'Invalid username or password' });
-  console.log('✅ Login successful for:', username);
-  res.json({ success: true, userId: user._id, username: user.username, email: user.email });
+  
+  if (!username || !password) {
+    return res.status(400).json({ error: 'Username and password are required' });
+  }
+  
+  try {
+    // Find user by username or email
+    const user = await User.findOne({ 
+      $or: [{ username }, { email: username }] 
+    });
+    
+    if (!user) {
+      return res.status(401).json({ error: 'Invalid username or password' });
+    }
+    
+    // Check password
+    const isValidPassword = await bcrypt.compare(password, user.password_hash);
+    
+    if (!isValidPassword) {
+      return res.status(401).json({ error: 'Invalid username or password' });
+    }
+    
+    console.log('✅ Login successful for:', user.username);
+    res.json({ 
+      success: true, 
+      message: 'Login successful',
+      userId: user._id,
+      username: user.username,
+      email: user.email
+    });
+    
+  } catch (error) {
+    console.error('❌ Login error:', error);
+    res.status(500).json({ error: 'Failed to authenticate user' });
+  }
 });
 
 // Forgot password endpoint
@@ -174,23 +242,20 @@ app.post('/api/forgot-password', async (req, res) => {
   
   try {
     const user = await User.findOne({ email });
+    
     if (!user) {
-      return res.status(404).json({ error: 'No account found with this email' });
+      return res.status(404).json({ error: 'User not found' });
     }
     
-    // Generate a simple reset token (in production, use crypto.randomBytes)
+    // Generate reset token (simple implementation)
     const resetToken = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-    const resetTokenExpiry = new Date(Date.now() + 3600000); // 1 hour from now
+    const resetTokenExpiry = new Date(Date.now() + 3600000); // 1 hour
     
-    // Store reset token in user document
     user.resetToken = resetToken;
     user.resetTokenExpiry = resetTokenExpiry;
     await user.save();
     
-    console.log('✅ Reset token generated for:', email);
-    
-    // In a real app, you would send this via email
-    // For now, we'll return it in the response (for testing)
+    console.log('✅ Password reset token generated for:', user.username);
     res.json({ 
       success: true, 
       message: 'Password reset instructions sent to your email',
@@ -283,11 +348,49 @@ app.use('*', (req, res) => {
     });
 });
 
-// Start server
+// Start server with better error handling
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
+
+console.log('🚀 Starting Sassinator Backend...');
+console.log(`📊 Environment: ${process.env.NODE_ENV || 'development'}`);
+console.log(`🔧 Port: ${PORT}`);
+console.log(`📡 MongoDB URI: ${MONGODB_URI ? 'Set' : 'Not set'}`);
+
+// Improved server startup with error handling
+const server = app.listen(PORT, () => {
     console.log(`🚀 Sassinator Backend running on port ${PORT}`);
     console.log(`📡 API available at http://localhost:${PORT}`);
     console.log(`🧪 Test endpoint: http://localhost:${PORT}/api/test`);
     console.log(`✅ Ready to validate SaaS ideas with Cohere AI!`);
+    console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
+});
+
+// Handle server errors
+server.on('error', (error) => {
+    if (error.code === 'EADDRINUSE') {
+        console.error(`❌ Port ${PORT} is already in use`);
+    } else {
+        console.error('❌ Server error:', error);
+    }
+    process.exit(1);
+});
+
+// Graceful shutdown
+process.on('SIGTERM', () => {
+    console.log('🛑 SIGTERM received, shutting down gracefully');
+    server.close(() => {
+        console.log('✅ Server closed');
+        process.exit(0);
+    });
+});
+
+// Handle uncaught exceptions
+process.on('uncaughtException', (error) => {
+    console.error('❌ Uncaught Exception:', error);
+    process.exit(1);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+    console.error('❌ Unhandled Rejection at:', promise, 'reason:', reason);
+    process.exit(1);
 }); 
