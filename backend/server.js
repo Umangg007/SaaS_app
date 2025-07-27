@@ -12,11 +12,34 @@ const app = express();
 
 // Middleware
 app.use(cors({
-    origin: '*', // Allow all origins for testing
-    credentials: false, // Disable credentials for wildcard origin
+    origin: function (origin, callback) {
+        // Allow requests with no origin (like mobile apps or curl requests)
+        if (!origin) return callback(null, true);
+        
+        const allowedOrigins = [
+            'https://saas-app-rwda.onrender.com',
+            'http://localhost:3000',
+            'http://localhost:5000',
+            'http://127.0.0.1:5500',
+            'http://localhost:5500'
+        ];
+        
+        if (allowedOrigins.indexOf(origin) !== -1) {
+            callback(null, true);
+        } else {
+            console.log('CORS blocked origin:', origin);
+            callback(null, true); // Allow all for now
+        }
+    },
+    credentials: false,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+    preflightContinue: false,
+    optionsSuccessStatus: 204
 }));
+
+// Handle preflight requests
+app.options('*', cors());
 app.use(express.json()); // Parse JSON requests
 
 // Connect to MongoDB
