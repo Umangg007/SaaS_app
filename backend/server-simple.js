@@ -6,7 +6,12 @@ const fetch = require('node-fetch');
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors({
+    origin: '*', // Allow all origins for testing
+    credentials: false, // Disable credentials for wildcard origin
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(express.json());
 
 // Health check
@@ -26,6 +31,69 @@ app.get('/api/test', (req, res) => {
         message: 'API is working!',
         status: 'success'
     });
+});
+
+// Simple login endpoint (without database)
+app.post('/api/login', async (req, res) => {
+    try {
+        const { username, password } = req.body;
+        console.log(username, password);
+        
+        
+        if (!username || !password) {
+            return res.status(400).json({ error: 'Username and password are required' });
+        }
+        
+        // Simple mock login - accept any credentials for now
+        console.log('🔐 Login attempt:', username);
+        
+        res.json({ 
+            success: true, 
+            message: 'Login successful',
+            userId: 'mock-user-id-' + Date.now(),
+            username: username,
+            email: username + '@example.com'
+        });
+        
+    } catch (error) {
+        console.error('❌ Login error:', error);
+        res.status(500).json({ error: 'Failed to authenticate user' });
+    }
+});
+
+// Simple signup endpoint (without database)
+app.post('/api/signup', async (req, res) => {
+    try {
+        const { username, email, password } = req.body;
+        
+        if (!username || !email || !password) {
+            return res.status(400).json({ error: 'Username, email, and password are required' });
+        }
+        
+        console.log('👤 Signup attempt:', username, email);
+        
+        res.json({ 
+            success: true, 
+            message: 'User registered successfully',
+            userId: 'mock-user-id-' + Date.now()
+        });
+        
+    } catch (error) {
+        console.error('❌ Signup error:', error);
+        res.status(500).json({ error: 'Failed to register user' });
+    }
+});
+
+// Username availability check
+app.get('/api/check-username/:username', async (req, res) => {
+    const { username } = req.params;
+    // Always return available for now
+    res.json({ available: true });
+});
+
+// Mock history endpoint
+app.get('/api/history/:userId', async (req, res) => {
+    res.json({ history: [] });
 });
 
 // Simple idea validation endpoint (without database)

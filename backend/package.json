@@ -19,7 +19,7 @@
     "openai",
     "api"
   ],
-  "author": "Your Name",
+  "author": "Umang",
   "license": "MIT",
   "dependencies": {
     "bcryptjs": "^3.0.2",

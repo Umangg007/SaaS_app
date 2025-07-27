@@ -12,7 +12,7 @@
     "dev": "nodemon server-simple.js"
   },
   "keywords": ["saas", "validator", "openai", "api"],
-  "author": "Your Name",
+  "author": "Umang",
   "license": "MIT",
   "dependencies": {
     "express": "^4.18.2",
@@ -21,5 +21,8 @@
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
+  },
+  "production": {
+    "apiUrl": "https://your-actual-backend-url.onrender.com"
   }
 } 
