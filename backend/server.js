@@ -12,13 +12,8 @@ const app = express();
 
 // Middleware
 app.use(cors({
-    origin: [
-        'https://saas-app-rwda.onrender.com',
-        'http://localhost:3000',
-        'http://localhost:5000',
-        'http://127.0.0.1:5500'
-    ],
-    credentials: true,
+    origin: '*', // Allow all origins for testing
+    credentials: false, // Disable credentials for wildcard origin
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
